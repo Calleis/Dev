@@ -22,7 +22,7 @@ data_products <- fread(file = file.path(chemin,"BDD/raw/df_products_soin_visage_
                        na.strings = "non defini")
 
 ####################  Données Produits : Recoding & ID
-names(data_products)
+
 # Clean des variables textuelles 
 data_products$full_name <- try_to_lower(improve_text(data_products$full_name))
 data_products$name <- try_to_lower(improve_text(data_products$name))
@@ -36,6 +36,10 @@ data_products$label <- try_to_lower(improve_text(data_products$label))
 data_products$descriptif <- try_to_lower(improve_text(data_products$descriptif))
 data_products$advice <- try_to_lower(improve_text(data_products$advice))
 data_products$composant <- try_to_lower(improve_text(data_products$composant))
+
+# Netoyage caractères spéciaux 
+data_products$descriptif <- str_replace_all(data_products$descriptif, "\r", " ")
+data_products$descriptif <- str_replace_all(data_products$descriptif, "\n", " ")
 
 # Produits unique 
 length(unique(data_products$full_name)) # 1480
@@ -55,12 +59,14 @@ data_products[c(285,364),]
 data_products[c(53,881),]
 
 ####################  Données Commentaires : Recoding & ID
+
 data_comments$product <- try_to_lower(improve_text(data_comments$product))
 data_comments$brand <- try_to_lower(improve_text(data_comments$brand))
 data_comments$pseudo_writer <- try_to_lower(improve_text(data_comments$pseudo_writer))
 data_comments$point_positif <- try_to_lower(improve_text(data_comments$point_positif))
 data_comments$point_negatif <- try_to_lower(improve_text(data_comments$point_negatif))
 data_comments$comment <- try_to_lower(improve_text(data_comments$comment))
+
 # définition du même id
 data_comments$id_product <- paste0(data_comments$product, "_", data_comments$brand)
 
@@ -80,10 +86,12 @@ data_comments[which(data_comments$brand == "cha ling"),"product"]
 data_comments[which(data_comments$brand == "elyctia"),"product"]
 
 ####################  Données d'analyses finales: Uniquement tous produits avec des commentaires
+
 # Produits
 data_products <- subset(data_products, id_product %in% data_comments$id_product) # 1240 produits 
 ordered_data <- data_products[order(data_products$id_product)]
 data_products <- ordered_data[!duplicated(ordered_data$id_product),] # 1238 produits ( retrait des doublons)
+
 # Commentaires
 data_comments <- subset(data_comments, id_product %in% data_products$id_product) # 56.534 commentaires 
 
@@ -99,12 +107,15 @@ data_soin_visage <- data_soin_visage[,-c("V1.x","V1.y","full_name","name","price
                                          "price_one_litre","date_out_on_market",
                                          "price_one_kg","product","note_douceur",
                                          "note_facility")]
-# Sauvegarde fichier final
-# write.csv(data_soin_visage, 
-#           file = file.path(chemin,"BDD/clean/data_soin_visage.csv"),
-#           row.names = F, na = "non defini", 
-#           fileEncoding = "UTF-8")
 
+##################### Sauvegarde fichier final : # 56534 commentaires sur 1238 produits 
+
+write.csv(data_soin_visage,
+          file = file.path(chemin,"BDD/clean/data_soin_visage.csv"),
+          row.names = F, na = "non defini",
+          fileEncoding = "UTF-8") 
+
+# Fichiers pour R
 saveRDS(data_products, file = file.path(chemin,"BDD/clean/data_products.rds"))
 saveRDS(data_comments, file = file.path(chemin,"BDD/clean/data_comments.rds"))
 saveRDS(data_soin_visage, file = file.path(chemin,"BDD/clean/data_soin_visage.rds"))

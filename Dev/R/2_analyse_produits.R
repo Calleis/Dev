@@ -1,6 +1,9 @@
 ####################
 # Analyse des produits
+# analyse des descriptifs des produits 
+# pour déduire leur interet
 #################### 
+
 library("tm")
 library("tidytext")
 library("tidyverse")
@@ -10,9 +13,13 @@ library("wordcloud")
 library("SnowballC")
 library(Rgr)
 
+chemin <- "/home/menyssa/Calleis"
+
+read.
+
+
 # 2- Analyse des descriptifs produits
-data_products$descriptif <- str_replace_all(data_products$descriptif, "\r", " ")
-data_products$descriptif <- str_replace_all(data_products$descriptif, "\n", " ")
+
 
 # Toutes les descriptions sous forme de corpus
 corpus <- data_products$descriptif %>%

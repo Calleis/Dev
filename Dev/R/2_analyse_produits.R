@@ -14,11 +14,11 @@ library(Rgr)
 
 chemin <- "/home/menyssa/Calleis"
 
-####################  Lecture 
+####################  Lecture  #################### 
 
 data_products <- readRDS(file = file.path(chemin,"BDD/clean/data_products.rds"))
 
-####################  Découpage des descriptions 
+####################  Découpage des descriptions  #################### 
 
 # Toutes les descriptions sous forme de corpus
 corpus <- data_products$descriptif %>%
@@ -130,7 +130,7 @@ mots <- c("acne", "boutons", "bouton","comedons","cicatrisante","cicatrices")
 docs <- data.frame(DF[which(DF$term %in% mots),"document"])
 data_products$acne[as.numeric(docs$document)] <- "Oui"
 
-####################  Graphiques
+####################  Graphiques  ####################
 
 # Plot des fréquences de mots 
 data_terms$word <- factor(data_terms$word, levels = data_terms$word)
@@ -162,8 +162,3 @@ plot(TDM, term = freq.terms,
      corThreshold = 0.1, 
      weighting = F,
      nodeAttrs=list(fillcolor=vc))
-
-
-
-
-
